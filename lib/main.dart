@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 void main() => runApp(const BrickBreakerApp());
@@ -94,6 +95,33 @@ class BrickBreakerScreen extends StatefulWidget {
 
 class _BrickBreakerScreenState extends State<BrickBreakerScreen> {
   BrickBreakerGame game = BrickBreakerGame();
+  Timer? _ticker;
+
+  void _start() {
+    if (game.gameOver) return;
+    setState(game.launch);
+    _ticker ??= Timer.periodic(const Duration(milliseconds: 33), (_) {
+      if (!mounted) return;
+      setState(game.tick);
+      if (game.gameOver || !game.launched) {
+        _ticker?.cancel();
+        _ticker = null;
+      }
+    });
+  }
+
+  void _restart() {
+    _ticker?.cancel();
+    _ticker = null;
+    setState(() => game = BrickBreakerGame());
+  }
+
+  @override
+  void dispose() {
+    _ticker?.cancel();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -170,14 +198,11 @@ class _BrickBreakerScreenState extends State<BrickBreakerScreen> {
                   ),
                   Wrap(spacing: 12, children: [
                     FilledButton(
-                      onPressed: game.gameOver ? null : () => setState(() {
-                        game.launch();
-                        game.tick();
-                      }),
-                      child: const Text('Launch / Step'),
+                      onPressed: game.gameOver || game.launched ? null : _start,
+                      child: const Text('Launch'),
                     ),
                     OutlinedButton(
-                      onPressed: () => setState(() => game = BrickBreakerGame()),
+                      onPressed: _restart,
                       child: const Text('Restart'),
                     ),
                   ]),
