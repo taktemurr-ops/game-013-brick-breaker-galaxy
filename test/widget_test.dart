@@ -143,6 +143,9 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(seconds: 1));
     expect(find.byType(ShopScreen), findsOneWidget, reason: texts());
+    // The restore button sits at the end of the list (store policy: it must exist).
+    await tester.scrollUntilVisible(find.text('Restore purchases'), 300,
+        scrollable: find.descendant(of: find.byType(ShopScreen), matching: find.byType(Scrollable)).first);
     expect(find.text('Restore purchases'), findsOneWidget, reason: texts());
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox.shrink());
