@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 
-import '../core/arcade.dart';
-import '../core/level_plan.dart';
-import '../core/rng.dart';
+import 'package:studio_core/core/arcade.dart';
+import 'package:studio_core/core/level_plan.dart';
+import 'package:studio_core/core/rng.dart';
 
 /// Brick types: 1..3 = hit points, 8 = steel (unbreakable), 9 = bomb.
 const int kSteel = 8;
